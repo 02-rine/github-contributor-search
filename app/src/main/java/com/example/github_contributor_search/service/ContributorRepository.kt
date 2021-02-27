@@ -6,9 +6,10 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+// GithubAPIからデータを取得するために、Retrofit2の設定を行う
 class ContributorRepository {
 
-    // 受け取ったJSON形式のデータをGsonにより、パースする
+    // 受け取ったJSON形式のデータをGsonを用いて、パースする
     private val gson: Gson = GsonBuilder()
         .setLenient()
         .create()
@@ -17,16 +18,18 @@ class ContributorRepository {
         .addConverterFactory(GsonConverterFactory.create(gson))
         .baseUrl("https://api.github.com/")
         .build()
-
     private var githubService: GithubService = retrofit.create(GithubService::class.java)
 
-    //APIにリクエストし、レスポンスをコルーチンで受け取る(一覧)
+    // GithubAPIからContributorの一覧を受け取る
     suspend fun getContributorsList(): Response<List<Contributor>> =
         githubService.getContributorsList()
 
-    //singletonでRepositoryインスタンスを返すFactory
-    companion object Factory {
+    // GithubAPIからContributorの詳細を受け取る
+    suspend fun getContributorDetail(loginName: String): Response<ContributorDetail> =
+        githubService.getContributorDetail(loginName)
 
+    // singletonでContributorRepositoryインスタンスを返すFactory
+    companion object Factory {
         val instance: ContributorRepository
             @Synchronized get() {
                 return ContributorRepository()
