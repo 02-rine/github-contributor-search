@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import com.example.github_contributor_search.R
 import com.example.github_contributor_search.adapter.ContributorListAdapter
 import com.example.github_contributor_search.callback.ContributorClickCallback
@@ -16,8 +15,9 @@ import com.example.github_contributor_search.databinding.FragmentContributorList
 import com.example.github_contributor_search.service.Contributor
 import com.example.github_contributor_search.viewModel.ContributorListViewModel
 
-const val TAG_OF_PROJECT_LIST_FRAGMENT = "ProjectListFragment"
+const val TAG_CONTRIBUTOR_LIST: String = "contributor_list"
 
+// Contributorの一覧表示する画面
 class ContributorListFragment : Fragment() {
 
     private val viewModel: ContributorListViewModel by viewModels()
@@ -25,9 +25,11 @@ class ContributorListFragment : Fragment() {
     private lateinit var binding: FragmentContributorListBinding
 
     private val contributorListAdapter = ContributorListAdapter(object : ContributorClickCallback {
+        // リストのItemをクリック時の処理
         override fun onClick(contributor: Contributor) {
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) && activity is MainActivity) {
-                (activity as MainActivity).show(contributor)
+                // Contributorの詳細を表示する画面に切り替える
+                (activity as MainActivity).showContributorDetail(contributor)
             }
         }
     })
@@ -36,11 +38,12 @@ class ContributorListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // DataBindingの設定
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_contributor_list, container, false)
         binding.apply {
             contributorList.adapter = contributorListAdapter
-            isLoading = true
+            isLoading = true // GithubAPIからデータを受け取っている間、ロード中と表示
         }
         return binding.root
     }
@@ -48,10 +51,11 @@ class ContributorListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.contributorList.observe(viewLifecycleOwner, { projects ->
-            projects?.let {
-                binding.isLoading = false
-                contributorListAdapter.setContributorList(it)
+        // GithubAPIからContributorの一覧を受け取った時の処理
+        viewModel.contributorList.observe(viewLifecycleOwner, {
+            it?.let {
+                binding.isLoading = false // GithubAPIからデータを受け取った後、リストを表示
+                contributorListAdapter.setContributorList(it) // Contributorの一覧をリストとして表示する
             }
         })
     }
