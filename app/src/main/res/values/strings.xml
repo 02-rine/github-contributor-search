@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">github-contributor-search</string>
+    <string name="app_name">Contributor-Search</string>
+    <string name="loading">ロード中…</string>
+    <string name="contributor_list">Contributorの一覧</string>
+    <string name="name">名前：</string>
+    <string name="contribution">Contribution数：</string>
+    <string name="location">所在地：</string>
+    <string name="email">メール：</string>
+    <string name="blog">ブログ：</string>
+    <string name="public_repos">公開リポジトリ数：</string>
+    <string name="company">会社名：</string>
+    <string name="follower">フォロワー数：</string>
+    <string name="following">フォロー数：</string>
 </resources>
