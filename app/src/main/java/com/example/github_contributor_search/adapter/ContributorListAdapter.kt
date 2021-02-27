@@ -10,10 +10,11 @@ import com.example.github_contributor_search.callback.ContributorClickCallback
 import com.example.github_contributor_search.databinding.ContributorListItemBinding
 import com.example.github_contributor_search.service.Contributor
 
-
+// Contributorの一覧をリスト表示するためのAdapter設定
 class ContributorListAdapter(private val contributorClickCallback: ContributorClickCallback?) :
     RecyclerView.Adapter<ContributorListAdapter.ContributorViewHolder>() {
 
+    // Contributorの一覧
     private var contributorList: List<Contributor>? = null
 
     fun setContributorList(contributorList: List<Contributor>) {
@@ -33,7 +34,7 @@ class ContributorListAdapter(private val contributorClickCallback: ContributorCl
 
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                     val oldList = this@ContributorListAdapter.contributorList
-                    return oldList?.get(oldItemPosition)?.id == contributorList[newItemPosition].id
+                    return oldList?.get(oldItemPosition)?.login == contributorList[newItemPosition].login
                 }
 
                 override fun areContentsTheSame(
@@ -42,7 +43,7 @@ class ContributorListAdapter(private val contributorClickCallback: ContributorCl
                 ): Boolean {
                     val contributor = contributorList[newItemPosition]
                     val old = contributorList[oldItemPosition]
-                    return contributor.id == old.id
+                    return contributor.login == old.login
                 }
             })
             this.contributorList = contributorList
@@ -56,11 +57,13 @@ class ContributorListAdapter(private val contributorClickCallback: ContributorCl
             R.layout.contributor_list_item, parent,
             false
         ) as ContributorListItemBinding
+        // Itemをクリック時の動作
         binding.callback = contributorClickCallback
         return ContributorViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ContributorViewHolder, position: Int) {
+        // ContributorをリストのItemに格納
         holder.binding.contributor = contributorList?.get(position)
         holder.binding.executePendingBindings()
     }
